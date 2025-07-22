@@ -65,7 +65,7 @@ console.log({types})
       const signature = await signer.signTypedData(domain, types, order);
 console.log({signature})
       // send to backend
-      const response = await axios.post(`${BASE_URL}/api/v1/place-an-order`, {
+      const response = await axios.post(`${BASE_URL}/api/v1/sign-an-order`, {
         address,
         order,
         signature
