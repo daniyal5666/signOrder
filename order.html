@@ -69,6 +69,7 @@ console.log({signature})
       });
 
       console.log("✅ Order Sent:", response.data);
+      window.opener.postMessage({ type: "order_placed", address }, "*");
     }
   </script>
 </body>
