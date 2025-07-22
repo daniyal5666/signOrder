@@ -22,6 +22,9 @@ const BASE_URL = "https://f872a302ad89.ngrok-free.app"; // Replace with your act
 console.log({verifyingContract})
 
       const provider = new ethers.BrowserProvider(window.ethereum);
+        const network = await provider.getNetwork();
+  console.log("Chain ID:", network.chainId); // numeric
+      
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
@@ -31,7 +34,7 @@ console.log({address})
       const domain = {
         name: 'Polymarket CLOB',
         version: '1',
-        chainId: 137,
+        chainId:  network.chainId,
         verifyingContract, // use actual CLOB address
       };
 
