@@ -64,12 +64,17 @@ console.log({types})
 
       const signature = await signer.signTypedData(domain, types, order);
 console.log({signature})
+      const obj = {
+  address,
+  order,
+  signature,
+  chainId: network.chainId,
+};
+console.log({obj})
+      
+
       // send to backend
-      const response = await axios.post(`${BASE_URL}/api/v1/sign-an-order`, {
-        address,
-        order,
-        signature, chainId:network.chainId,
-      });
+      const response = await axios.post(`${BASE_URL}/api/v1/sign-an-order`, obj);
 
       console.log("✅ Order Sent:", response.data);
       window.opener.postMessage({ type: "order_placed", address }, "*");
