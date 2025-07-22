@@ -68,7 +68,7 @@ console.log({signature})
       const response = await axios.post(`${BASE_URL}/api/v1/sign-an-order`, {
         address,
         order,
-        signature
+        signature, chainId:network.chainId,
       });
 
       console.log("✅ Order Sent:", response.data);
