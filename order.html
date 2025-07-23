@@ -27,6 +27,7 @@ console.log({verifyingContract})
       
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
+      const chainId= number(network.chainId)
       const address = await signer.getAddress();
 console.log({address})
 
@@ -68,7 +69,7 @@ console.log({signature})
   address,
   order,
   signature,
-  chainId: network.chainId,
+ chainId
 };
 console.log({obj})
       
