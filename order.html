@@ -1,86 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+  <body>
+    <p>Waiting for order placement...</p>
 
-<head>
-  <title>EIP-712 Sign Order</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <!-- <script>
-    const BASE_URL = "<?= BASE_URL ?>"; 
-  </script> -->
-</head>
+    <script>
+      window.addEventListener("message", function (event) {
+        const data = event.data;
 
-<body>
-  <h2>Sign Order & Submit</h2>
-  <button onclick="signAndSubmitOrder()">📝 Sign An Order</button>
+        if (data?.type === "order_placed") {
+          const address = data.address;
 
-  <script>
-    async function signAndSubmitOrder() {
-const BASE_URL = "https://cca9a48e8370.ngrok-free.app"; // Replace with your actual URL
-          const verifyingContract='0x066a3d9d8399afcc29b5ab0d48743cd22600f295'
+          google.script.run
+            .withSuccessHandler(() => {
+              alert("✅ Order placed.");
 
-console.log({verifyingContract})
+              // Refresh menus without page reload
+              google.script.run.onOpen();
 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-        const network = await provider.getNetwork();
-  console.log("Chain ID:", network.chainId); // numeric
-      
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const chainId= Number(network.chainId)
-      const address = await signer.getAddress();
-console.log({address})
+              google.script.host.close(); // Close sidebar
+            })
+            .withFailureHandler((e) => alert("❌ " + e.message));
+        }
+      });
 
-      // --- Define EIP-712 Order Data ---
-      const domain = {
-        name: 'Polymarket CLOB',
-        version: '1',
-        chainId:  network.chainId,
-        verifyingContract, // use actual CLOB address
-      };
-
-      const types = {
-        Order: [
-          { name: 'maker', type: 'address' },
-          { name: 'tokenId', type: 'uint256' },
-          { name: 'price', type: 'uint64' },
-          { name: 'size', type: 'uint64' },
-          { name: 'expiration', type: 'uint64' },
-          { name: 'salt', type: 'uint256' },
-          { name: 'side', type: 'uint8' }
-        ]
-      };
-console.log({types})
-
-      // example order values (you should get these dynamically from your UI)
-      const order = {
-        maker: address,
-        tokenId: "107418026729023491530035903527711568864573802284084778805471093324146373119524",
-        price: 0.5 * 1e6, // convert to micro units if needed
-        size: 1 * 1e6,
-        expiration: Math.floor(Date.now() / 1000) + 3600, // 1 hour
-        salt: Math.floor(Math.random() * 1e16),
-        side: 0 // 0 = buy, 1 = sell
-      };
-
-      const signature = await signer.signTypedData(domain, types, order);
-console.log({signature})
-      const obj = {
-  address,
-  order,
-  signature,
- chainId
-};
-console.log({obj})
-      
-
-      // send to backend
-      const response = await axios.post(`${BASE_URL}/api/v1/sign-an-order`, obj);
-
-      console.log("✅ Order Sent:", response.data);
-      window.opener.postMessage({ type: "order_placed", address }, "*");
-    }
-  </script>
-</body>
-
+      // Open external wallet.html in new tab
+      window.open(
+        "https://daniyal5666.github.io/signOrder/order.html",
+        "_blank"
+      );
+    </script>
+  </body>
 </html>
