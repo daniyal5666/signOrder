@@ -1,75 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <title>EIP-712 Sign Order</title>
+    <base target="_top" />
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- <script>
-    const BASE_URL = "<?= BASE_URL ?>"; 
-  </script> -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+      }
+      .field {
+        margin-bottom: 10px;
+      }
+      button {
+        background: #4f46e5;
+        color: white;
+        padding: 8px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background: #4338ca;
+      }
+    </style>
   </head>
-
   <body>
-    <h2>Sign Order & Submit</h2>
-    <button onclick="signAndSubmitOrder()">📝 Sign An Order</button>
+    <h2>Place Order</h2>
+
+    <div class="field">
+      <label>Market ID</label>
+      <input id="marketId" type="text" placeholder="0x123..." />
+    </div>
+    <div class="field">
+      <label>Outcome</label>
+      <select id="outcome">
+        <option value="YES">YES</option>
+        <option value="NO">NO</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Order Type</label>
+      <select id="orderType">
+        <option value="limit">Limit</option>
+        <option value="market">Market</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Price (for limit)</label>
+      <input id="price" type="number" step="0.001" value="0.50" />
+    </div>
+    <div class="field">
+      <label>Quantity</label>
+      <input id="quantity" type="number" step="0.1" value="10" />
+    </div>
+
+    <button onclick="placeOrder()">Place Order</button>
+
+    <p id="status"></p>
 
     <script>
-      async function signAndSubmitOrder() {
-        const BASE_URL = "https://e7b4e077df2c.ngrok-free.app"; // Replace with your actual URL
-        const verifyingContract = "0x066a3d9d8399afcc29b5ab0d48743cd22600f295";
+      async function placeOrder() {
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "Connecting wallet...";
 
-        console.log({ verifyingContract });
+        if (!window.ethereum) {
+          statusEl.textContent = "MetaMask/Rabby wallet not found";
+          return;
+        }
 
         const provider = new ethers.BrowserProvider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
-        console.log({ address });
 
-        // --- Define EIP-712 Order Data ---
+        const marketId = document.getElementById("marketId").value;
+        const outcome = document.getElementById("outcome").value;
+        const orderType = document.getElementById("orderType").value;
+        const price = parseFloat(document.getElementById("price").value);
+        const quantity = parseFloat(document.getElementById("quantity").value);
+
+        statusEl.textContent = "Signing order...";
+
         const domain = {
-          name: "Polymarket CLOB",
+          name: "Polymarket",
           version: "1",
           chainId: 137,
-          verifyingContract, // use actual CLOB address
+          verifyingContract: "0x0000000000000000000000000000000000000000",
         };
 
         const types = {
           Order: [
-            { name: "maker", type: "address" },
-            { name: "tokenId", type: "uint256" },
-            { name: "price", type: "uint64" },
-            { name: "size", type: "uint64" },
-            { name: "expiration", type: "uint64" },
-            { name: "salt", type: "uint256" },
-            { name: "side", type: "uint8" },
+            { name: "marketId", type: "string" },
+            { name: "outcome", type: "string" },
+            { name: "orderType", type: "string" },
+            { name: "price", type: "uint256" },
+            { name: "quantity", type: "uint256" },
           ],
         };
-        console.log({ types });
 
-        // example order values (you should get these dynamically from your UI)
-        const order = {
-          maker: address,
-          tokenId:
-            "107418026729023491530035903527711568864573802284084778805471093324146373119524",
-          price: 0.5 * 1e6, // convert to micro units if needed
-          size: 1 * 1e6,
-          expiration: Math.floor(Date.now() / 1000) + 3600, // 1 hour
-          salt: Math.floor(Math.random() * 1e16),
-          side: 0, // 0 = buy, 1 = sell
+        const value = {
+          marketId,
+          outcome,
+          orderType,
+          price: ethers.parseUnits(price.toString(), 6),
+          quantity: ethers.parseUnits(quantity.toString(), 6),
         };
 
-        const signature = await signer.signTypedData(domain, types, order);
-        console.log({ signature });
-        // send to backend
-        const response = await axios.post(`${BASE_URL}/api/v1/place-an-order`, {
-          address,
-          order,
-          signature,
-        });
+        const signature = await signer.signTypedData(domain, types, value);
 
-        console.log("✅ Order Sent:", response.data);
-        window.opener.postMessage({ type: "order_placed", address }, "*");
+        const orderPayload = {
+          marketId,
+          outcome,
+          orderType,
+          price,
+          quantity,
+          address,
+          signature,
+        };
+
+        statusEl.textContent = "Submitting order...";
+
+        window.opener.postMessage({ type: "order_placed", orderPayload }, "*");
       }
     </script>
   </body>
