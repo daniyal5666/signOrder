@@ -80,11 +80,13 @@
         const quantity = parseFloat(document.getElementById("quantity").value);
 
         statusEl.textContent = "Signing order...";
+        const network = await provider.getNetwork();
+        const chainId = Number(network.chainId);
 
         const domain = {
           name: "Polymarket",
           version: "1",
-          chainId: 137,
+          chainId,
           verifyingContract: "0x0000000000000000000000000000000000000000",
         };
 
