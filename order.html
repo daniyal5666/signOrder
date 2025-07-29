@@ -4,21 +4,6 @@
     <base target="_top" />
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <select id="marketId"></select>
-
-    <script>
-      const markets = [
-        { label: "0x123", name: "Market A" },
-        { label: "0x456", name: "Market B" },
-      ];
-      const select = document.getElementById("marketId");
-      markets.forEach((m) => {
-        const opt = document.createElement("option");
-        opt.value = m.label;
-        opt.textContent = m.name;
-        select.appendChild(opt);
-      });
-    </script>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -44,8 +29,8 @@
     <h2>Place Order</h2>
 
     <div class="field">
-      <label>Market ID</label>
-      <input id="marketId" type="text" placeholder="0x123..." />
+      <label>Market</label>
+      <select id="marketId"></select>
     </div>
     <div class="field">
       <label>Outcome</label>
@@ -75,6 +60,20 @@
     <p id="status"></p>
 
     <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const markets = [
+          { label: "0x123", name: "Market A" },
+          { label: "0x456", name: "Market B" },
+        ];
+        const select = document.getElementById("marketId");
+        markets.forEach((m) => {
+          const opt = document.createElement("option");
+          opt.value = m.label;
+          opt.textContent = m.name;
+          select.appendChild(opt);
+        });
+      });
+
       async function placeOrder() {
         const statusEl = document.getElementById("status");
         statusEl.textContent = "Connecting wallet...";
@@ -136,7 +135,6 @@
         };
 
         statusEl.textContent = "Submitting order...";
-
         window.opener.postMessage({ type: "order_placed", orderPayload }, "*");
       }
     </script>
