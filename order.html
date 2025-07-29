@@ -4,6 +4,10 @@
     <base target="_top" />
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      const BASE_URL = "https://8a878ae06981.ngrok-free.app";
+    </script>
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -64,7 +68,7 @@
         const select = document.getElementById("marketId");
         select.innerHTML = "<option>Loading markets...</option>";
         try {
-          const res = await fetch("https://gamma-api.polymarket.com/markets");
+          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`);
           const markets = await res.json();
 
           select.innerHTML = "";
