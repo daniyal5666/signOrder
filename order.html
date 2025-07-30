@@ -72,7 +72,7 @@
           const markets = await res.json();
 
           select.innerHTML = "";
-          markets.forEach((m) => {
+          markets?.data.forEach((m) => {
             const opt = document.createElement("option");
             opt.value = m.id;
             opt.textContent = m.question;
