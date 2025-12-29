@@ -5,8 +5,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      // const BASE_URL = "https://labubu.4xbrokers.com";
-      const BASE_URL = "https://6e425187fe43.ngrok-free.app";
+      const BASE_URL = "https://labubu.4xbrokers.com";
     </script>
 
     <style>
@@ -69,16 +68,8 @@
         const select = document.getElementById("marketId");
         select.innerHTML = "<option>Loading markets...</option>";
         try {
-          const options = {
-    method: "GET",
-    contentType: "application/json",
-    muteHttpExceptions: true, // Add this to inspect the response if it fails
-    headers: {
-      "User-Agent": "curl/7.64.1", // Trick ngrok into thinking it’s not a browser
-      "ngrok-skip-browser-warning": "true", // Optional, works with some setups
-    },
-  };
-          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`,options);
+    
+          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`);
           const markets = await res.json();
 
           select.innerHTML = "";
