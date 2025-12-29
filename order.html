@@ -88,6 +88,9 @@
 
       async function placeOrder() {
         const statusEl = document.getElementById("status");
+        const marketId = document.getElementById("marketId").value;
+        console.log({marketId})
+        return
         statusEl.textContent = "Connecting wallet...";
 
         if (!window.ethereum) {
@@ -99,7 +102,7 @@
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
 
-        const marketId = document.getElementById("marketId").value;
+        // const marketId = document.getElementById("marketId").value;
         const outcome = document.getElementById("outcome").value;
         const orderType = document.getElementById("orderType").value;
         const price = parseFloat(document.getElementById("price").value);
