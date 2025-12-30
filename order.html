@@ -75,7 +75,7 @@
           select.innerHTML = "";
           markets?.data.forEach((m) => {
             const opt = document.createElement("option");
-            opt.value = m.id;
+            opt.value = m.condition_id;
             opt.textContent = m.question;
             select.appendChild(opt);
           });
