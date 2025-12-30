@@ -69,8 +69,17 @@
         const select = document.getElementById("marketId");
         select.innerHTML = "<option>Loading markets...</option>";
         try {
-    
-          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`);
+     const options = {
+    method: "GET",
+    contentType: "application/json",
+    muteHttpExceptions: true, // Add this to inspect the response if it fails
+    headers: {
+      "User-Agent": "curl/7.64.1", // Trick ngrok into thinking it’s not a browser
+      "ngrok-skip-browser-warning": "true", // Optional, works with some setups
+    },
+  };
+
+          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`,options);
           const markets = await res.json();
 
           select.innerHTML = "";
