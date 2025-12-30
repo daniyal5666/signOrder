@@ -5,8 +5,8 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      // const BASE_URL = "https://labubu.4xbrokers.com";
-      const BASE_URL = "https://8cd5595574cf.ngrok-free.app";
+      const BASE_URL = "https://labubu.4xbrokers.com";
+      // const BASE_URL = "https://8cd5595574cf.ngrok-free.app";
     </script>
 
     <style>
@@ -79,7 +79,7 @@
     },
   };
 
-          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`,options);
+          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`);
           const markets = await res.json();
 
           select.innerHTML = "";
