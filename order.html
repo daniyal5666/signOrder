@@ -5,7 +5,9 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      const BASE_URL = "https://labubu.4xbrokers.com";
+      // const BASE_URL = "https://labubu.4xbrokers.com";
+      const BASE_URL = "https://c830eba702fd.ngrok-free.app";
+
       // const BASE_URL = "https://8cd5595574cf.ngrok-free.app";
     </script>
 
@@ -69,17 +71,20 @@
         const select = document.getElementById("marketId");
         select.innerHTML = "<option>Loading markets...</option>";
         try {
-     const options = {
-    method: "GET",
-    contentType: "application/json",
-    muteHttpExceptions: true, // Add this to inspect the response if it fails
-    headers: {
-      "User-Agent": "curl/7.64.1", // Trick ngrok into thinking it’s not a browser
-      "ngrok-skip-browser-warning": "true", // Optional, works with some setups
-    },
-  };
+          const options = {
+            method: "GET",
+            contentType: "application/json",
+            muteHttpExceptions: true, // Add this to inspect the response if it fails
+            headers: {
+              "User-Agent": "curl/7.64.1", // Trick ngrok into thinking it’s not a browser
+              "ngrok-skip-browser-warning": "true", // Optional, works with some setups
+            },
+          };
 
-          const res = await fetch(`${BASE_URL}/api/v1/get-enabled-orders`);
+          const res = await fetch(
+            `${BASE_URL}/api/v1/get-enabled-orders`,
+            options
+          );
           const markets = await res.json();
 
           select.innerHTML = "";
@@ -156,10 +161,11 @@
           quantity,
           address,
           signature,
-          signer
+          signer,
         };
 
         statusEl.textContent = "Submitting order...";
+        
         window.opener.postMessage({ type: "order_placed", orderPayload }, "*");
       }
     </script>
