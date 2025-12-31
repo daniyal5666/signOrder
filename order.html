@@ -144,6 +144,7 @@
           price: ethers.parseUnits(price.toString(), 6),
           quantity: ethers.parseUnits(quantity.toString(), 6),
         };
+        console.log({ signer });
 
         const signature = await signer.signTypedData(domain, types, value);
 
